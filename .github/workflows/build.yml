@@ -1,0 +1,21 @@
+name: Test and Build mobile app
+
+on:
+  push:
+    branches:
+      - develop
+    tags:
+      - v*
+  pull_request:
+    types: [opened]
+    branches:
+      - develop
+
+jobs:
+  setup:
+    uses: ./.github/workflows/test.yml
+
+  android:
+    needs: [setup]
+    uses: ./.github/workflows/android.yml
+    secrets: inherit
