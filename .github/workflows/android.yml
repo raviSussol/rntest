@@ -99,9 +99,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Mobile
+      - run: unzip -o Mobile.apk.zip
       - name: Display structure of downloaded files
         run: ls -R
-      # - run: unzip Mobile.apk.zip -d release
+
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: '18'
