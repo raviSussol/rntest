@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Mobile
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: release
           retention-days: 1
 
   release:
@@ -93,9 +93,9 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v3
-      # - uses: actions/download-artifact@v3
-      #   with:
-      #     name: Mobile
+      - uses: actions/download-artifact@v3
+        with:
+          name: Mobile
       - name: Display structure of downloaded files
         run: ls -R
       # - run: unzip Mobile.apk.zip -d release
