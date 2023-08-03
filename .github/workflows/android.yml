@@ -99,7 +99,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Mobile
-      - run: unzip -o Mobile.apk.zip
+      - run: unzip -o release.zip
       - name: Display structure of downloaded files
         run: ls -R
 
