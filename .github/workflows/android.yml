@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Mobile
-          path: release
+          path: release.zip
           retention-days: 1
 
   release:
