@@ -125,6 +125,7 @@ jobs:
 
       # for testing
       - run: echo 'Job context is ${{ toJSON(job) }}'
+      - run: echo 'Prerelease is ${{ contains(github.ref, 'prerelease') && true || false }}'
 
   # publish:
   #   name: publish
