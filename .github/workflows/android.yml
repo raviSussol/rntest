@@ -92,7 +92,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Mobile
-      - run: unzip Mobile -d release
+      - run: unzip Mobile.apk -d release
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: '18'
