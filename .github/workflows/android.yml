@@ -92,7 +92,9 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Mobile
-      - run: unzip Mobile.apk.zip -d release
+      - name: Display structure of downloaded files
+        run: ls -R
+      # - run: unzip Mobile.apk.zip -d release
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: '18'
@@ -105,18 +107,18 @@ jobs:
       # - run: |
       #     cd ./android && chmod +x gradlew && ./gradlew assembleRelease
 
-      - name: Sign app APK
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          # releaseDirectory: android/app/build/outputs/apk/release
-          releaseDirectory: release
-          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: '33.0.0'
+      # - name: Sign app APK
+      #   uses: r0adkll/sign-android-release@v1
+      #   id: sign_app
+      #   with:
+      #     # releaseDirectory: android/app/build/outputs/apk/release
+      #     releaseDirectory: release
+      #     signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+      #     alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+      #     keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      #   env:
+      #     BUILD_TOOLS_VERSION: '33.0.0'
 
       # - name: Upload artifacts
       #   uses: actions/upload-artifact@v3
@@ -125,11 +127,11 @@ jobs:
       #     path: ${{steps.sign_app.outputs.signedReleaseFile}}
       #     retention-days: 1
 
-      - name: Generate changelog
-        uses: mikepenz/release-changelog-builder-action@v3
-        id: build_changelog
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Generate changelog
+      #   uses: mikepenz/release-changelog-builder-action@v3
+      #   id: build_changelog
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Create release
       #   id: create_release
@@ -144,26 +146,26 @@ jobs:
       #     draft: contains(github.ref, 'draft') && true || false
       #     prerelease: contains(github.ref, 'prerelease') && true || false
 
-      - name: Create release and upload assets from artifact
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          name: ${{ github.ref_name }}
-          draft: contains(github.ref, 'draft') && true || false
-          prerelease: contains(github.ref, 'prerelease') && true || false
-          body: ${{ steps.build_changelog.outputs.changelog }}
-          files: ${{steps.sign_app.outputs.signedReleaseFile}}
+      # - name: Create release and upload assets from artifact
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     name: ${{ github.ref_name }}
+      #     draft: contains(github.ref, 'draft') && true || false
+      #     prerelease: contains(github.ref, 'prerelease') && true || false
+      #     body: ${{ steps.build_changelog.outputs.changelog }}
+      #     files: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-  publish:
-    name: publish
-    runs-on: ubuntu-latest
-    needs: [release]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download signed APK
-        uses: actions/download-artifact@v3
-        with:
-          name: Mobile.apk
+  # publish:
+  #   name: publish
+  #   runs-on: ubuntu-latest
+  #   needs: [release]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Download signed APK
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: Mobile.apk
 
-      - name: Display structure of downloaded files
-        run: ls -R
+  #     - name: Display structure of downloaded files
+  #       run: ls -R
