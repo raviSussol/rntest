@@ -55,13 +55,6 @@ jobs:
           cd ./android
           ./gradlew assembleRelease
 
-      # - if: startsWith(github.ref, 'refs/tags/')
-      #   name: Copy and zip artifact
-      #   run: |
-      #     mkdir release
-      #     cp android/app/build/outputs/apk/release/app-release.apk release
-      #     zip -j release.zip ./release/app-release.apk
-
       - if: startsWith(github.ref, 'refs/tags/')
         name: Delete old artifacts
         uses: actions/github-script@v6
@@ -100,69 +93,34 @@ jobs:
         with:
           name: Mobile
       - run: mkdir release && cp ./app-release.apk release
-      - name: Display structure of downloaded files
-        run: ls -R
 
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '18'
-      # - run: yarn install --frozen-lockfile
-      # - uses: actions/setup-java@v3
-      #   with:
-      #     java-version: '11'
-      #     distribution: 'temurin'
-      #     cache: gradle
-      # - run: |
-      #     cd ./android && chmod +x gradlew && ./gradlew assembleRelease
+      - name: Sign app APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: '33.0.0'
 
-      # - name: Sign app APK
-      #   uses: r0adkll/sign-android-release@v1
-      #   id: sign_app
-      #   with:
-      #     # releaseDirectory: android/app/build/outputs/apk/release
-      #     releaseDirectory: release
-      #     signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-      #     alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-      #     keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
-      #     keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      #   env:
-      #     BUILD_TOOLS_VERSION: '33.0.0'
+      - name: Generate changelog
+        uses: mikepenz/release-changelog-builder-action@v3
+        id: build_changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Mobile
-      #     path: ${{steps.sign_app.outputs.signedReleaseFile}}
-      #     retention-days: 1
-
-      # - name: Generate changelog
-      #   uses: mikepenz/release-changelog-builder-action@v3
-      #   id: build_changelog
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Create release
-      #   id: create_release
-      #   uses: actions/create-release@latest
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     body: |
-      #       ${{ steps.build_changelog.outputs.changelog }}
-      #     draft: contains(github.ref, 'draft') && true || false
-      #     prerelease: contains(github.ref, 'prerelease') && true || false
-
-      # - name: Create release and upload assets from artifact
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     name: ${{ github.ref_name }}
-      #     draft: contains(github.ref, 'draft') && true || false
-      #     prerelease: contains(github.ref, 'prerelease') && true || false
-      #     body: ${{ steps.build_changelog.outputs.changelog }}
-      #     files: ${{steps.sign_app.outputs.signedReleaseFile}}
+      - name: Create release and upload assets from artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          name: ${{ github.ref_name }}
+          draft: contains(github.ref, 'draft') && true || false
+          prerelease: contains(github.ref, 'prerelease') && true || false
+          body: ${{ steps.build_changelog.outputs.changelog }}
+          files: ${{steps.sign_app.outputs.signedReleaseFile}}
 
   # publish:
   #   name: publish
