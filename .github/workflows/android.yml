@@ -55,12 +55,12 @@ jobs:
           cd ./android
           ./gradlew assembleRelease
 
-      - if: startsWith(github.ref, 'refs/tags/')
-        name: Copy and zip artifact
-        run: |
-          mkdir release
-          cp android/app/build/outputs/apk/release/app-release.apk release
-          zip -j release.zip ./release/app-release.apk
+      # - if: startsWith(github.ref, 'refs/tags/')
+      #   name: Copy and zip artifact
+      #   run: |
+      #     mkdir release
+      #     cp android/app/build/outputs/apk/release/app-release.apk release
+      #     zip -j release.zip ./release/app-release.apk
 
       - if: startsWith(github.ref, 'refs/tags/')
         name: Delete old artifacts
@@ -86,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Mobile
-          path: release.zip
+          path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 1
 
   release:
@@ -99,7 +99,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Mobile
-      - run: unzip -o release.zip
+      - run: mkdir release && cp ./app-release.apk release
       - name: Display structure of downloaded files
         run: ls -R
 
