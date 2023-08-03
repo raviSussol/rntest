@@ -118,7 +118,8 @@ jobs:
           tag_name: ${{ github.ref }}
           name: ${{ github.ref_name }}
           draft: contains(github.ref, 'draft') && true || false
-          prerelease: contains(github.ref, 'prerelease') && true || false
+          # prerelease: contains(github.ref, 'prerelease') && true || false
+          prerelease: true
           body: ${{ steps.build_changelog.outputs.changelog }}
           files: ${{steps.sign_app.outputs.signedReleaseFile}}
 
