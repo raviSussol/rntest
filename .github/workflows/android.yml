@@ -106,7 +106,6 @@ jobs:
       - name: Copy artifacts to release
         run: |
           mkdir release
-          cp ./apk/release/app-release.apk release
           cp ./bundle/release/app-release.aab release
 
       - name: Sign app APK
@@ -137,7 +136,6 @@ jobs:
           body: ${{ steps.build_changelog.outputs.changelog }}
           files: |
             ${{ steps.sign_app.signedReleaseFile0 }}
-            ${{ steps.sign_app.signedReleaseFile1 }}
 
   # publish:
   #   name: publish
