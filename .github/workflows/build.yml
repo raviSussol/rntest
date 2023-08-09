@@ -15,7 +15,12 @@ jobs:
   setup:
     uses: ./.github/workflows/test.yml
 
-  android:
+  # android:
+  #   needs: [setup]
+  #   uses: ./.github/workflows/android.yml
+  #   secrets: inherit
+
+  ios:
     needs: [setup]
-    uses: ./.github/workflows/android.yml
+    uses: ./.github/workflows/ios.yml
     secrets: inherit
