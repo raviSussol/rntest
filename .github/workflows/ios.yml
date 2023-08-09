@@ -39,10 +39,15 @@ jobs:
 
       - name: Build ios
         run: |
-          xcodebuild -project ios/rntest.xcodeproj \
+          xcodebuild -workspace ios/rntest.xcworkspace \
+          -configuration Release \
           -scheme "rntest" \
-          -destination generic/platform=iOS \
+          -destination "platform=iOS Simulator,name=iPhone 14" \
+          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
           clean build
+
+      # - name: Run tests
+      #   run: xcodebuild test -scheme MyProjectName -project MyProjectName.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 12,OS=15.0' | xcpretty && exit ${PIPESTATUS[0]}
 
   # release:
   #   if: startsWith(github.ref, 'refs/tags/')
