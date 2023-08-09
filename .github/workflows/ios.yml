@@ -43,7 +43,6 @@ jobs:
           -configuration Release \
           -scheme "rntest" \
           -destination "platform=iOS Simulator,name=iPhone 14" \
-          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
           clean build
 
       # - name: Run tests
