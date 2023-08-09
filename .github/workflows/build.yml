@@ -23,4 +23,4 @@ jobs:
   ios:
     needs: [setup]
     uses: ./.github/workflows/ios.yml
-    secrets: inherit
+    # secrets: inherit
